@@ -62,7 +62,7 @@ class SwiftClass(SwiftObjectDescription):
         container_class_name = self.env.temp_data.get('swift:class')
 
         # split on : -> first part is class name, second part is superclass list
-        parts = [x.strip() for x in sig.split(':', maxsplit=1)]
+        parts = [x.strip() for x in sig.split(':', 1)]
 
         # if the class name contains a < then there is a generic type attachment
         if '<' in parts[0]:
@@ -182,8 +182,8 @@ class SwiftClassmember(SwiftObjectDescription):
 
         result = []
         for parameter in parameters:
-            name, rest = [x.strip() for x in parameter.split(':', maxsplit=1)]
-            name_parts = name.split(' ', maxsplit=1)
+            name, rest = [x.strip() for x in parameter.split(':', 1)]
+            name_parts = name.split(' ', 1)
             if len(name_parts) > 1:
                 name = name_parts[0]
                 variable_name = name_parts[1]
@@ -247,7 +247,7 @@ class SwiftClassmember(SwiftObjectDescription):
                 rest = rest[i + 1:]
                 break
 
-        if len(parameter_list) > 0:
+        if parameter_list is not None and len(parameter_list) > 0:
             parameters = self._parse_parameter_list(parameter_list)
         else:
             parameters = []
@@ -274,14 +274,20 @@ class SwiftClassmember(SwiftObjectDescription):
             signode += addnodes.desc_name('init', 'init')
             signature += 'init('
             for p in parameters:
-                signature += p['name'] + ':'
+                if p['name'] == p['variable_name']:
+                    signature += p['name'] + ':'
+                else:
+                    signature += p['name'] + ' ' + p['variable_name'] + ':'
             signature += ')'
         else:
             signode += addnodes.desc_name(method_name, method_name)
             signature += method_name
             signature += '('
             for p in parameters:
-                signature += p['name'] + ':'
+                if p['name'] == p['variable_name']:
+                    signature += p['name'] + ':'
+                else:
+                    signature += p['name'] + ' ' + p['variable_name'] + ':'
             signature += ')'
 
         if generics:
@@ -290,8 +296,12 @@ class SwiftClassmember(SwiftObjectDescription):
         params = []
         sig = ''
         for p in parameters:
-            param = p['name'] + ': ' + p['type']
-            sig += p['name'] + ':'
+            if p['name'] == p['variable_name']:
+                param = p['name'] + ': ' + p['type']
+                sig += p['name'] + ':'
+            else:
+                param = p['name'] + ' ' + p['variable_name'] + ':' + p['type']
+                sig += p['name'] + ' ' + p['variable_name'] + ':'
             if p['default']:
                 param += ' = ' + p['default']
             params.append(addnodes.desc_parameter(param, param))
@@ -329,10 +339,10 @@ class SwiftEnumCase(SwiftObjectDescription):
         raw_value = None
 
         # split on ( -> first part is case name
-        parts = [x.strip() for x in sig.split('(', maxsplit=1)]
+        parts = [x.strip() for x in sig.split('(', 1)]
         enum_case = parts[0].strip()
         if len(parts) > 1:
-            parts = parts[1].rsplit('=', maxsplit=1)
+            parts = parts[1].rsplit('=', 1)
             assoc_value = parts[0].strip()
             if len(parts) > 1:
                 raw_value = parts[1].strip()
@@ -341,7 +351,7 @@ class SwiftEnumCase(SwiftObjectDescription):
             else:
                 assoc_value = "(" + assoc_value
         else:
-            parts = [x.strip() for x in sig.split('=', maxsplit=1)]
+            parts = [x.strip() for x in sig.split('=', 1)]
             enum_case = parts[0].strip()
             if len(parts) > 1:
                 raw_value = parts[1].strip()
@@ -415,7 +425,7 @@ class SwiftClassIvar(SwiftObjectDescription):
 class SwiftXRefRole(XRefRole):
 
     def __init__(self,tipe):
-        super().__init__()
+        super(SwiftXRefRole, self).__init__()
         self.tipe = tipe
 
     def process_link(self, env, refnode, has_explicit_title, title, target):
@@ -590,13 +600,13 @@ def setup(app):
     from .autodoc import SwiftAutoDocumenter, ProtocolAutoDocumenter, ExtensionAutoDocumenter, EnumAutoDocumenter
     app.connect('builder-inited', make_index)
 
-    app.override_domain(SwiftStandardDomain)
-    app.add_autodocumenter(SwiftAutoDocumenter)
-    app.add_autodocumenter(ProtocolAutoDocumenter)
-    app.add_autodocumenter(ExtensionAutoDocumenter)
-    app.add_autodocumenter(EnumAutoDocumenter)
+#    app.override_domain(SwiftStandardDomain)
+#    app.add_autodocumenter(SwiftAutoDocumenter)
+#    app.add_autodocumenter(ProtocolAutoDocumenter)
+#    app.add_autodocumenter(ExtensionAutoDocumenter)
+#    app.add_autodocumenter(EnumAutoDocumenter)
 
 
     app.add_domain(SwiftDomain)
     app.add_config_value('swift_search_path', ['../src'], 'env')
-    app.add_config_value('autodoc_default_flags', [], True)
+#    app.add_config_value('autodoc_default_flags', [], True)

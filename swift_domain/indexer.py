@@ -4,6 +4,7 @@
 
 import re
 import fnmatch
+import io
 import os
 from pprint import PrettyPrinter
 from fuzzywuzzy import process
@@ -131,7 +132,7 @@ def get_doc_block(content, line):
             return [] #not a doc comment
 
         if not block_detected: #don't go searching arbitrarily far back
-            break 
+            break
 
         #insert on top
         doc_block.insert(0,l)
@@ -198,7 +199,7 @@ def doc_block_to_rst(doc_block):
 
         #l = emphasis_pattern.sub(r'**\g<emphasis>**',l)
 
-        if l == "- parameters:":
+        if l == ' - Parameters:' or l == "- parameters:":
            parameter_mode = True
            yield ''
            continue
@@ -247,7 +248,7 @@ class SwiftFileIndex(object):
             print("Indexing swift file: %s" % file)
             symbol_stack = []
             braces = 0
-            with open(file, "r",encoding="utf-8") as fp:
+            with io.open(file, mode="r",encoding="utf-8") as fp:
 
                 content = fp.readlines()
                 for (index, line) in enumerate(content):
@@ -322,7 +323,7 @@ class SwiftFileIndex(object):
                 for name in child.__names(item['children'],name_prefix=new_prefix):
                     yield name
 
-                
+
 
     def find_fuzz(self,name,index=None,name_prefix=[]):
         if not index:

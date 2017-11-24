@@ -29,6 +29,10 @@ class SwiftAutoDocumenter(Documenter):
         'only-with-raw-members': members_set_option #only document if it contains the raw member
     }
 
+    @classmethod
+    def can_document_member(cls, member, membername, isattr, parent):
+        return membername in ('SwiftAutoDocumenter', )  #isinstance(member, DJANGO_FIELDS)
+
     def __init__(self, *args, **kwargs):
         super(SwiftAutoDocumenter, self).__init__(*args, **kwargs)
         self.append_at_end = []
