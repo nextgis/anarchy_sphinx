@@ -267,6 +267,9 @@ class SwiftFileIndex(object):
                                     scope = 'public'
                                 else:
                                     scope = 'internal'
+
+                            if scope == 'open':
+                                scope = 'public'
                             item = {
                                 'file': file,
                                 'line': index,
@@ -407,6 +410,8 @@ class SwiftObjectIndex(object):
                             else:
                                 scope = 'internal'
                     else:
+                        scope = 'public'
+                    if scope == 'open':
                         scope = 'public'
                     docstring = get_doc_block(content, i - 1)
                     if "- noindex: true" in docstring:
