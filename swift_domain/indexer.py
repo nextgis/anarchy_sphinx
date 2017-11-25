@@ -11,9 +11,9 @@ from fuzzywuzzy import process
 
 
 # member patterns
-func_pattern      = re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|internal\s+)?(final\s+)?(?P<static>class\s|static\s+|mutating\s+)?(?P<type>func)\s+(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(?P<rest>[^{]*)')
-init_pattern      = re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|internal\s+)?(final\s+|convenience\s+)*(?P<type>init\??)\s*(?P<rest>[^{]*)')
-var_pattern       = re.compile(r'\s*(final\s+)?(?P<add_scope>private\s*\(set\)\s+|private\s*\(get\)\s+)?(?P<scope>private\s+|public\s+|internal\s+)?(final\s+)?(?P<static>static\s+)?(?P<type>var\s+|let\s+)(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(?P<rest>[^{]*)(?P<computed>\s*{\s*)?')
+func_pattern      = re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(final\s+)?(?P<static>class\s|static\s+|mutating\s+)?(?P<type>func)\s+(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(?P<rest>[^{]*)')
+init_pattern      = re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(final\s+|convenience\s+)*(?P<type>init\??)\s*(?P<rest>[^{]*)')
+var_pattern       = re.compile(r'\s*(final\s+)?(?P<add_scope>private\s*\(set\)\s+|private\s*\(get\)\s+)?(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(final\s+)?(?P<static>static\s+)?(?P<type>var\s+|let\s+)(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(?P<rest>[^{]*)(?P<computed>\s*{\s*)?')
 proto_var_pattern = re.compile(r'\s*(?P<static>static\s+)?(?P<type>var\s+)(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(?P<rest>[^{]*)(?P<computed>\s*{(?:\s*get\s+set\s*|\s*get\s*|\s*set\s*)}\s*)?')
 case_pattern      = re.compile(r'\s*(?P<type>case)\s+(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(\s*(?P<assoc_type>\([a-zA-Z_[(][a-zA-Z0-9_<>[\]()?!:, \t-]*\))\s*)?(\s*=\s*(?P<raw_value>.*))?')
 
@@ -58,23 +58,23 @@ code_pattern = re.compile(r'`(?P<code>[^`]*)\`')
 
 # signatures
 def class_sig(name=r'[a-zA-Z_][a-zA-Z0-9_]*'):
-    return re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|internal\s+)?(final\s+)?(?P<struct>class)\s+(?!func)(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
+    return re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(final\s+)?(?P<struct>class)\s+(?!func)(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
 
 
 def enum_sig(name=r'[a-zA-Z_][a-zA-Z0-9_]*'):
-    return re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|internal\s+)?(final\s+)?(?P<struct>enum)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
+    return re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(final\s+)?(?P<struct>enum)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
 
 
 def struct_sig(name=r'[a-zA-Z_][a-zA-Z0-9_]*'):
-    return re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|internal\s+)?(final\s+)?(?P<struct>struct)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
+    return re.compile(r'\s*(final\s+)?(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(final\s+)?(?P<struct>struct)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
 
 
 def protocol_sig(name=r'[a-zA-Z_][a-zA-Z0-9_]*'):
-    return re.compile(r'\s*(?P<scope>private\s+|public\s+|internal\s+)?(?P<struct>protocol)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
+    return re.compile(r'\s*(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(?P<struct>protocol)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*')
 
 
 def extension_sig(name=r'[a-zA-Z_][a-zA-Z0-9_]*'):
-    return re.compile(r'\s*(?P<scope>private\s+|public\s+|internal\s+)?(?P<struct>extension)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*(\s*where\s+(?P<where>[^{]*))?')
+    return re.compile(r'\s*(?P<scope>private\s+|public\s+|open\s+|internal\s+)?(?P<struct>extension)\s+(?P<name>' + name + r'\b)(\s*:\s*(?P<type>[^{]*))*(\s*where\s+(?P<where>[^{]*))?')
 
 
 # debug printer
