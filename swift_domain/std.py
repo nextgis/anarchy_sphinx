@@ -23,7 +23,7 @@ from sphinx.domains import Domain, ObjType
 from sphinx.directives import ObjectDescription
 from sphinx.util import ws_re
 from sphinx.util.nodes import clean_astext, make_refnode
-from sphinx.util.compat import Directive
+from docutils.parsers.rst import directives, Directive
 from sphinx.domains.std import StandardDomain
 
 
