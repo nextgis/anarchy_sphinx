@@ -23,6 +23,12 @@ from sphinx.util.nodes import make_refnode
 from sphinx.util.docfields import Field, GroupedField, TypedField
 from .std import SwiftStandardDomain
 
+# TODO: https://developer.apple.com/documentation/swift/ <String, Int ...>\\8	Int8	UInt8
+
+swift_reserved = set(['Int', 'Double', 'String', 'Bool',
+    'Int16', 'Int32', 'Int64',
+    'UInt16', 'Uint32', 'Uint64'])
+
 def _iteritems(d):
     for k in d:
         yield k, d[k]
@@ -586,6 +592,13 @@ class SwiftDomain(Domain):
             if refname == target:
                 node = make_refnode(builder, fromdocname, docname, signature, contnode, target)
                 return node
+        if target in swift_reserved:
+            node = nodes.reference(target, '')
+            node['refuri'] = 'https://developer.apple.com/documentation/swift/' + target.lower()
+            node['reftitle'] = target
+
+            return node
+
         return None
 
     def get_objects(self):

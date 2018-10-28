@@ -124,7 +124,6 @@ def main():
             pass
         with open(destfile, "w") as fp:
             heading = 'Documentation for {}'.format(os.path.relpath(file, source_path))
-            fp.write(('=' * len(heading)) + '\n')
             fp.write(heading + '\n')
             fp.write(('=' * len(heading)) + '\n\n\n')
             if args.autodocumenter:
