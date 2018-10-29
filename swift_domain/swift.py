@@ -428,7 +428,7 @@ class SwiftClassIvar(SwiftObjectDescription):
             typeNode = addnodes.desc_type(' : ', ' : ')
             typeXref = addnodes.pending_xref('', refdomain='swift', reftype='type', reftarget=typ)
             typeXref += nodes.Text(typ, typ)
-            typeNode += paramXref
+            typeNode += typeXref
             signode += typeNode
 
 
