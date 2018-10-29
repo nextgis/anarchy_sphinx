@@ -25,7 +25,7 @@ from .std import SwiftStandardDomain
 
 # TODO: https://developer.apple.com/documentation/swift/ <String, Int ...>\\8	Int8	UInt8
 
-swift_reserved = set(['Int', 'Double', 'String', 'Bool',
+swift_reserved = set(['Int', 'Double', 'String', 'Bool', 'Any', 'Equatable', 'CGFloat',
     'Int16', 'Int32', 'Int64',
     'UInt16', 'Uint32', 'Uint64'])
 
@@ -117,8 +117,8 @@ class SwiftClass(SwiftObjectDescription):
             children = []
             for c in super_classes:
                 prefix = ', ' if c != super_classes[0] else ''
-                # ref = addnodes.pending_xref(c, reftype='protocol', refdomain='swift', reftarget=c, refwarn=True)
-                ref = nodes.Text(prefix + c)
+                ref = addnodes.pending_xref('', reftype='type', refdomain='swift', reftarget=c, refwarn=True)
+                ref += nodes.Text(prefix + c)
                 children.append(ref)
             signode += addnodes.desc_type('', ' : ', *children)
 
@@ -303,15 +303,21 @@ class SwiftClassmember(SwiftObjectDescription):
         sig = ''
         for p in parameters:
             if p['name'] == p['variable_name']:
-                param = p['name'] + ': ' + p['type']
+                param = p['name'] + ': ' # + p['type']
                 sig += p['name'] + ':'
             else:
-                param = p['name'] + ' ' + p['variable_name'] + ':' + p['type']
+                param = p['name'] + ' ' + p['variable_name'] + ':' # + p['type']
                 sig += p['name'] + ' ' + p['variable_name'] + ':'
-            if p['default']:
-                param += ' = ' + p['default']
-            params.append(addnodes.desc_parameter(param, param))
+            #if p['default']:
+            #    param += ' = ' + p['default']
 
+            paramNode = addnodes.desc_parameter(param, param)
+            paramXref = addnodes.pending_xref('', refdomain='swift', reftype='type', reftarget=p['type'])
+            paramXref += nodes.Text(p['type'], p['type'])
+            paramNode += paramXref
+            if p['default']:
+                paramNode += nodes.Text(' = ' + p['default'], ' = ' + p['default'])
+            params.append(paramNode)
         signode += addnodes.desc_parameterlist(sig, "", *params)
 
         title = signature
@@ -320,7 +326,12 @@ class SwiftClassmember(SwiftObjectDescription):
             # signature += "throws"
 
         if return_type:
-            signode += addnodes.desc_returns(return_type, return_type)
+            paramNode = addnodes.desc_returns('', '')
+            paramXref = addnodes.pending_xref('', refdomain='swift', reftype='type', reftarget=return_type)
+            paramXref += nodes.Text(return_type, return_type)
+            paramNode += paramXref
+            signode += paramNode
+            # signode += addnodes.desc_returns(return_type, return_type)
             #signature += "-" + return_type
 
         #if container_class_type == 'protocol':
@@ -412,7 +423,15 @@ class SwiftClassIvar(SwiftObjectDescription):
         if match['type']:
             typ = match['type'].strip()
             #signature += '-' + typ
-            signode += addnodes.desc_type(typ, " : " + typ)
+            # signode += addnodes.desc_type(typ, " : " + typ)
+            # Add ref
+            typeNode = addnodes.desc_type(' : ', ' : ')
+            typeXref = addnodes.pending_xref('', refdomain='swift', reftype='type', reftarget=typ)
+            typeXref += nodes.Text(typ, typ)
+            typeNode += paramXref
+            signode += typeNode
+
+
         if match['value'] and len(match['value']) > 0:
             value = match['value'].strip()
             signode += addnodes.desc_addname(value, " = " + value)
@@ -588,14 +607,22 @@ class SwiftDomain(Domain):
 
     def resolve_xref(self, env, fromdocname, builder,
                      typ, target, node, contnode):
+        if target.endswith('?') or target.endswith('!'):
+            test_target = target[:-1]
+        else:
+            test_target = target
         for refname, (docname, type, signature) in _iteritems(self.data['objects']):
-            if refname == target:
-                node = make_refnode(builder, fromdocname, docname, signature, contnode, target)
-                return node
-        if target in swift_reserved:
-            node = nodes.reference(target, '')
-            node['refuri'] = 'https://developer.apple.com/documentation/swift/' + target.lower()
-            node['reftitle'] = target
+            for to in type_order:
+                if refname == to + ' ' + test_target:
+                    node = make_refnode(builder, fromdocname, docname, signature, contnode, test_target)
+                    return node
+        if test_target in swift_reserved:
+            node = nodes.reference(test_target, test_target)
+            if test_target.beginswith('CG'):
+                node['refuri'] = 'https://developer.apple.com/documentation/coregraphics/' + test_target.lower()
+            else:
+                node['refuri'] = 'https://developer.apple.com/documentation/swift/' + test_target.lower()
+            node['reftitle'] = test_target
 
             return node
 
@@ -610,14 +637,14 @@ def make_index(app,*args):
     build_index(app)
 
 def setup(app):
-    from .autodoc import SwiftAutoDocumenter, ProtocolAutoDocumenter, ExtensionAutoDocumenter, EnumAutoDocumenter
-    app.connect('builder-inited', make_index)
+    # from .autodoc import SwiftAutoDocumenter, ProtocolAutoDocumenter, ExtensionAutoDocumenter, EnumAutoDocumenter
+    # app.connect('builder-inited', make_index)
 
 #    app.override_domain(SwiftStandardDomain)
-#    app.add_autodocumenter(SwiftAutoDocumenter)
-#    app.add_autodocumenter(ProtocolAutoDocumenter)
-#    app.add_autodocumenter(ExtensionAutoDocumenter)
-#    app.add_autodocumenter(EnumAutoDocumenter)
+   # app.add_autodocumenter(SwiftAutoDocumenter)
+   # app.add_autodocumenter(ProtocolAutoDocumenter)
+   # app.add_autodocumenter(ExtensionAutoDocumenter)
+   # app.add_autodocumenter(EnumAutoDocumenter)
 
 
     app.add_domain(SwiftDomain)
