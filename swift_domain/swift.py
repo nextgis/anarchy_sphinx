@@ -618,7 +618,7 @@ class SwiftDomain(Domain):
                     return node
         if test_target in swift_reserved:
             node = nodes.reference(test_target, test_target)
-            if test_target.beginswith('CG'):
+            if test_target.startswith('CG'):
                 node['refuri'] = 'https://developer.apple.com/documentation/coregraphics/' + test_target.lower()
             else:
                 node['refuri'] = 'https://developer.apple.com/documentation/swift/' + test_target.lower()
