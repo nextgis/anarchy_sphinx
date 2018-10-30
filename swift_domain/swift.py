@@ -27,7 +27,7 @@ from .std import SwiftStandardDomain
 
 swift_reserved = set(['Int', 'Double', 'String', 'Bool', 'Any', 'Equatable', 'CGFloat',
     'Int16', 'Int32', 'Int64',
-    'UInt16', 'Uint32', 'Uint64'])
+    'UInt16', 'UInt32', 'UInt64'])
 
 def _iteritems(d):
     for k in d:
@@ -609,6 +609,8 @@ class SwiftDomain(Domain):
                      typ, target, node, contnode):
         if target.endswith('?') or target.endswith('!'):
             test_target = target[:-1]
+        elif target.startswith('[') and target.endswith(']'):
+            test_target = target[1:-1]
         else:
             test_target = target
         for refname, (docname, type, signature) in _iteritems(self.data['objects']):
