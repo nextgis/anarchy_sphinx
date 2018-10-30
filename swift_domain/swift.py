@@ -25,9 +25,13 @@ from .std import SwiftStandardDomain
 
 # TODO: https://developer.apple.com/documentation/swift/ <String, Int ...>\\8	Int8	UInt8
 
-swift_reserved = set(['Int', 'Double', 'String', 'Bool', 'Any', 'Equatable', 'CGFloat',
+swift_reserved = set(['Int', 'Double', 'Float', 'String', 'Bool', 'Any', 'Equatable',
+    'CGFloat',
+    'UILabel', 'UIImageView', 'UIColor', 'UIImage', 'UIButton', 'UITextField', 'UIControl', 'UISlider',
+    'GLKView',
+    'CLLocation',
     'Int16', 'Int32', 'Int64',
-    'UInt16', 'UInt32', 'UInt64'])
+    'UInt16', 'UInt32', 'UInt64', ])
 
 def _iteritems(d):
     for k in d:
@@ -616,7 +620,7 @@ class SwiftDomain(Domain):
 
         point_pos = test_target.find('.')
         if point_pos != -1:
-            test_target = test_target[point_pos:] 
+            test_target = test_target[point_pos:]
 
         for refname, (docname, type, signature) in _iteritems(self.data['objects']):
             for to in type_order:
@@ -627,6 +631,12 @@ class SwiftDomain(Domain):
             node = nodes.reference(test_target, test_target)
             if test_target.startswith('CG'):
                 node['refuri'] = 'https://developer.apple.com/documentation/coregraphics/' + test_target.lower()
+            elif test_target.startswith('CL'):
+                node['refuri'] = 'https://developer.apple.com/documentation/corelocation/' + test_target.lower()
+            elif test_target.startswith('GL'):
+                node['refuri'] = 'https://developer.apple.com/documentation/glkit/' + test_target.lower()
+            elif test_target.startswith('UI'):
+                node['refuri'] = 'https://developer.apple.com/documentation/uikit/' + test_target.lower()    
             else:
                 node['refuri'] = 'https://developer.apple.com/documentation/swift/' + test_target.lower()
             node['reftitle'] = test_target
