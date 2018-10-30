@@ -613,6 +613,11 @@ class SwiftDomain(Domain):
             test_target = target[1:-1]
         else:
             test_target = target
+
+        point_pos = test_target.find('.')
+        if point_pos != -1:
+            test_target = test_target[point_pos:] 
+
         for refname, (docname, type, signature) in _iteritems(self.data['objects']):
             for to in type_order:
                 if refname == to + ' ' + test_target:
