@@ -58,16 +58,16 @@ class SwiftAutoDocumenter(Documenter):
 
     def document(self, item, indent=''):
         member_list = self.options.members if isinstance(self.options.members, list) else []
-        raw_member_list = set(map(lambda x: x.replace("/",","),self.options.raw_members)) if isinstance(self.options.raw_members, set) else []
+        raw_member_list = set([x.replace("/",",") for x in self.options.raw_members]) if isinstance(self.options.raw_members, set) else []
 
         if self.options.only_with_members:
-            if len(list(filter(lambda x: x['name'] in self.options.only_with_members, item['members'].index))) <= 0:
+            if len(list([x for x in item['members'].index if x['name'] in self.options.only_with_members])) <= 0:
                 return
 
         if self.options.only_with_raw_members:
             contains = False
             for member in item['members'].index:
-                if len(list(filter(lambda x: x in member['raw'], map(lambda x: x.replace("/",","),self.options.only_with_raw_members))))>0:
+                if len(list([x for x in [x.replace("/",",") for x in self.options.only_with_raw_members] if x in member['raw']]))>0:
                     contains = True
             if not contains: return
 
@@ -100,7 +100,7 @@ class SwiftAutoDocumenter(Documenter):
                 add = True
             if member['name'] in member_list:
                 add = True
-            if len(list(filter(lambda x: x in member['raw'], raw_member_list)))>0:
+            if len(list([x for x in raw_member_list if x in member['raw']]))>0:
                 add = True
             if member['name'] in exclude_list:
                 add = False

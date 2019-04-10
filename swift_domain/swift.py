@@ -172,7 +172,7 @@ class SwiftClassmember(SwiftObjectDescription):
         parens = {'[]': 0, '()': 0, '<>': 0}
         last_split = 0
         for i, c in enumerate(parameter_list):
-            for key, value in parens.items():
+            for key, value in list(parens.items()):
                 if c == key[0]:
                     value += 1
                     parens[key] = value
@@ -181,7 +181,7 @@ class SwiftClassmember(SwiftObjectDescription):
                     parens[key] = value
 
             skip_comma = False
-            for key, value in parens.items():
+            for key, value in list(parens.items()):
                 if value != 0:
                     skip_comma = True
 

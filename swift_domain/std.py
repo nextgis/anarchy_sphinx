@@ -509,16 +509,16 @@ class SwiftStandardDomain(StandardDomain):
 
     def merge_domaindata(self, docnames, otherdata):
         # XXX duplicates?
-        for key, data in otherdata['progoptions'].items():
+        for key, data in list(otherdata['progoptions'].items()):
             if data[0] in docnames:
                 self.data['progoptions'][key] = data
-        for key, data in otherdata['objects'].items():
+        for key, data in list(otherdata['objects'].items()):
             if data[0] in docnames:
                 self.data['objects'][key] = data
-        for key, data in otherdata['labels'].items():
+        for key, data in list(otherdata['labels'].items()):
             if data[0] in docnames:
                 self.data['labels'][key] = data
-        for key, data in otherdata['anonlabels'].items():
+        for key, data in list(otherdata['anonlabels'].items()):
             if data[0] in docnames:
                 self.data['anonlabels'][key] = data
 
