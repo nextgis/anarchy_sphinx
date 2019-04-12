@@ -18,7 +18,7 @@ from docutils.statemachine import ViewList
 
 from sphinx import addnodes
 from sphinx.roles import XRefRole
-from sphinx.locale import l_, _
+from sphinx.locale import _, __
 from sphinx.domains import Domain, ObjType
 from sphinx.directives import ObjectDescription
 from sphinx.util import ws_re
