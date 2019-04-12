@@ -69,7 +69,7 @@ class GenericObject(ObjectDescription):
 
 
 class EnvVar(GenericObject):
-    indextemplate = l_('environment variable; %s')
+    indextemplate = _('environment variable; %s')
 
 
 class EnvVarXRefRole(XRefRole):
@@ -429,12 +429,12 @@ class SwiftStandardDomain(StandardDomain):
     label = 'Default'
 
     object_types = {
-        'term': ObjType(l_('glossary term'), 'term', searchprio=-1),
-        'token': ObjType(l_('grammar token'), 'token', searchprio=-1),
-        'label': ObjType(l_('reference label'), 'ref', 'keyword',
+        'term': ObjType(_('glossary term'), 'term', searchprio=-1),
+        'token': ObjType(_('grammar token'), 'token', searchprio=-1),
+        'label': ObjType(_('reference label'), 'ref', 'keyword',
                          searchprio=-1),
-        'envvar': ObjType(l_('environment variable'), 'envvar'),
-        'cmdoption': ObjType(l_('program option'), 'option'),
+        'envvar': ObjType(_('environment variable'), 'envvar'),
+        'cmdoption': ObjType(_('program option'), 'option'),
     }
 
     directives = {
@@ -467,9 +467,9 @@ class SwiftStandardDomain(StandardDomain):
         'progoptions': {},  # (program, name) -> docname, labelid
         'objects': {},      # (type, name) -> docname, labelid
         'labels': {         # labelname -> docname, labelid, sectionname
-            'genindex': ('genindex', '', l_('Index')),
-            'modindex': ('swift-modindex', '', l_('Module Index')),
-            'search':   ('search', '', l_('Search Page')),
+            'genindex': ('genindex', '', _('Index')),
+            'modindex': ('swift-modindex', '', _('Module Index')),
+            'search':   ('search', '', _('Search Page')),
         },
         'anonlabels': {     # labelname -> docname, labelid
             'genindex': ('genindex', ''),

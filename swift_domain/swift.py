@@ -58,12 +58,8 @@ class SwiftObjectDescription(ObjectDescription):
             self.env.domaindata['swift']['objects'][fullname] = (self.env.docname, self.objtype, signature)
         else:
             objects = self.env.domaindata['swift']['objects']
-            self.env.warn(
-                self.env.docname,
-                'duplicate object description of %s, ' % fullname +
-                'other instance in ' +
-                self.env.doc2path(objects[fullname][0]),
-                self.lineno)
+            self.warn('duplicate object description of %s, ' % fullname +
+                'other instance in ' + self.env.doc2path(objects[fullname][0]))
 
 
 class SwiftClass(SwiftObjectDescription):
@@ -157,13 +153,13 @@ class SwiftClass(SwiftObjectDescription):
 class SwiftClassmember(SwiftObjectDescription):
 
     doc_field_types = [
-        TypedField('parameter', label=l_('Parameters'),
+        TypedField('parameter', label=_('Parameters'),
                    names=('param', 'parameter', 'arg', 'argument'),
                    typerolename='obj', typenames=('paramtype', 'type')),
-        GroupedField('errors', label=l_('Throws'), rolename='obj',
+        GroupedField('errors', label=_('Throws'), rolename='obj',
                      names=('raises', 'raise', 'exception', 'except', 'throw', 'throws'),
                      can_collapse=True),
-        Field('returnvalue', label=l_('Returns'), has_arg=False,
+        Field('returnvalue', label=_('Returns'), has_arg=False,
               names=('returns', 'return')),
     ]
 
@@ -395,19 +391,19 @@ var_sig = re.compile(r'^\s*(?P<name>[a-zA-Z_][a-zA-Z0-9_]*\b)(\s*:\s*(?P<type>[a
 class SwiftClassIvar(SwiftObjectDescription):
 
     doc_field_types = [
-        Field('defaultvalue', label=l_('Default'), has_arg=False,
+        Field('defaultvalue', label=_('Default'), has_arg=False,
               names=('defaults', 'default')),
     ]
+
+    def warn(self, msg):
+        self.state_machine.reporter.warning(msg, line=self.lineno)
 
     def handle_signature(self, sig, signode):
         container_class_name = self.env.temp_data.get('swift:class')
 
         match = var_sig.match(sig)
         if not match:
-            self.env.warn(
-                self.env.docname,
-                'invalid variable/constant documentation string "%s", ' % sig,
-                self.lineno)
+            self.warn('invalid variable/constant documentation string "%s", ' % sig)
             return
 
         match = match.groupdict()
@@ -471,8 +467,8 @@ class SwiftModuleIndex(Index):
     """
 
     name = 'modindex'
-    localname = l_('Swift Module Index')
-    shortname = l_('Index')
+    localname = _('Swift Module Index')
+    shortname = _('Index')
 
     @staticmethod
     def indexsorter(a):
@@ -542,22 +538,22 @@ class SwiftDomain(Domain):
     name = 'swift'
     label = 'Swift'
     object_types = {
-        'function':        ObjType(l_('function'),            'function',     'obj'),
-        'method':          ObjType(l_('method'),              'method',       'obj'),
-        'class_method':    ObjType(l_('class method'),        'class_method', 'obj'),
-        'static_method':   ObjType(l_('static method'),       'static_method','obj'),
-        'class':           ObjType(l_('class'),               'class',        'obj'),
-        'enum':            ObjType(l_('enum'),                'enum',         'obj'),
-        'enum_case':       ObjType(l_('enum case'),           'enum_case',    'obj'),
-        'struct':          ObjType(l_('struct'),              'struct',       'obj'),
-        'init':            ObjType(l_('initializer'),         'init',         'obj'),
-        'protocol':        ObjType(l_('protocol'),            'protocol',     'obj'),
-        'extension':       ObjType(l_('extension'),           'extension',    'obj'),
-        'default_impl':    ObjType(l_('extension'),           'default_impl', 'obj'),
-        'let':             ObjType(l_('constant'),            'let',          'obj'),
-        'var':             ObjType(l_('variable'),            'var',          'obj'),
-        'static_let':      ObjType(l_('static/class constant'),     'static_let',   'obj'),
-        'static_var':      ObjType(l_('static/class variable'),     'static_var',   'obj'),
+        'function':        ObjType(_('function'),            'function',     'obj'),
+        'method':          ObjType(_('method'),              'method',       'obj'),
+        'class_method':    ObjType(_('class method'),        'class_method', 'obj'),
+        'static_method':   ObjType(_('static method'),       'static_method','obj'),
+        'class':           ObjType(_('class'),               'class',        'obj'),
+        'enum':            ObjType(_('enum'),                'enum',         'obj'),
+        'enum_case':       ObjType(_('enum case'),           'enum_case',    'obj'),
+        'struct':          ObjType(_('struct'),              'struct',       'obj'),
+        'init':            ObjType(_('initializer'),         'init',         'obj'),
+        'protocol':        ObjType(_('protocol'),            'protocol',     'obj'),
+        'extension':       ObjType(_('extension'),           'extension',    'obj'),
+        'default_impl':    ObjType(_('extension'),           'default_impl', 'obj'),
+        'let':             ObjType(_('constant'),            'let',          'obj'),
+        'var':             ObjType(_('variable'),            'var',          'obj'),
+        'static_let':      ObjType(_('static/class constant'),     'static_let',   'obj'),
+        'static_var':      ObjType(_('static/class variable'),     'static_var',   'obj'),
     }
 
     directives = {
@@ -636,7 +632,7 @@ class SwiftDomain(Domain):
             elif test_target.startswith('GL'):
                 node['refuri'] = 'https://developer.apple.com/documentation/glkit/' + test_target.lower()
             elif test_target.startswith('UI'):
-                node['refuri'] = 'https://developer.apple.com/documentation/uikit/' + test_target.lower()    
+                node['refuri'] = 'https://developer.apple.com/documentation/uikit/' + test_target.lower()
             else:
                 node['refuri'] = 'https://developer.apple.com/documentation/swift/' + test_target.lower()
             node['reftitle'] = test_target
