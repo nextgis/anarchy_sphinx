@@ -43,6 +43,9 @@ class SwiftObjectDescription(ObjectDescription):
         'noindex': directives.flag,
     }
 
+    def warn(self, msg):
+        self.state_machine.reporter.warning(msg, line=self.lineno)
+
     def add_target_and_index(self, name_cls_add, sig, signode):
         fullname, signature, add_to_index = name_cls_add
         if 'noindex' in self.options or not add_to_index:
